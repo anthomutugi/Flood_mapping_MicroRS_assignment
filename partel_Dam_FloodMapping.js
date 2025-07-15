@@ -41,7 +41,7 @@ Map.centerObject(roi);
 //Map.addLayer(after_image,{min:-25,max:0},'after')
 Map.addLayer(before_filtered,{min:-25,max:0},'before_filtered')
 Map.addLayer(after_filtered,{min:-25,max:0},'after_filtered')
-Map.addLayer(flood_mask,{palette:['Yellow']},'Flood_Inundation')
+// Map.addLayer(flood_mask,{palette:['Yellow']},'Flood_Inundation')
 Map.addLayer(water_mask,{palette:['Blue']},'Water')
 
 print('Total ROI Area (Ha)', roi.area(1).divide(10000))
@@ -144,9 +144,7 @@ title.add(mapTitle);
 Map.add(title);
 
 
-//############################
 // Speckle Filtering Functions
-//############################
 
 // Function to convert from d
 function toNatural(img) {
@@ -271,3 +269,49 @@ function RefinedLee(img) {
 //   maxPixels: 1e13
 // });
 
+
+              //create an RGB image using sentinel 2
+var s2 = ee.ImageCollection("COPERNICUS/S2_HARMONIZED")
+                  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+                  .select(['B4','B3','B2']);
+
+var rgbVis = {
+  min: 0,
+  max: 3000,
+  bands: ['B4', 'B3', 'B2'],
+};
+
+        
+var s2_before = s2.filter(ee.Filter.date('2018-03-10', '2018-03-25')).filterBounds(roi).mosaic().clip(roi)  
+var s2_after = s2.filter(ee.Filter.date('2018-06-10', '2018-06-25')).filterBounds(roi).mosaic().clip(roi)
+
+// print(before.size())
+// print(after.size())
+
+
+Map.addLayer(s2_after,rgbVis,"s2_after")
+Map.addLayer(s2_before,rgbVis,"s2_before")
+
+
+// // exporting the before and after RGB sentinel 2 data
+// Export.image.toDrive({
+//   image: s2_before,
+//   description: 's2_before_flooding',
+//   folder: 'Microwave_RS',
+//   fileNamePrefix: 's2_before',
+//   region: roi,
+//   scale: 10,
+//   crs: 'EPSG:4326',
+//   maxPixels: 1e13
+// });
+
+// Export.image.toDrive({
+//   image: s2_after,
+//   description: 's2_after_floods',
+//   folder: 'Microwave_RS',
+//   fileNamePrefix: 's2_after',
+//   region: roi,
+//   scale: 10,
+//   crs: 'EPSG:4326',
+//   maxPixels: 1e13
+// });
