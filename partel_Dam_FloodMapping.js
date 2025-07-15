@@ -41,7 +41,7 @@ Map.centerObject(roi);
 //Map.addLayer(after_image,{min:-25,max:0},'after')
 Map.addLayer(before_filtered,{min:-25,max:0},'before_filtered')
 Map.addLayer(after_filtered,{min:-25,max:0},'after_filtered')
-// Map.addLayer(flood_mask,{palette:['Yellow']},'Flood_Inundation')
+Map.addLayer(flood_mask,{palette:['Yellow']},'Flood_Inundation')
 Map.addLayer(water_mask,{palette:['Blue']},'Water')
 
 print('Total ROI Area (Ha)', roi.area(1).divide(10000))
